@@ -1,0 +1,27 @@
+# Development Dependencies for Legal Advisory System v8.0
+
+-r requirements.txt
+
+# Code Quality
+black==23.12.1              # Code formatting
+isort==5.13.2               # Import sorting
+flake8==6.1.0               # Linting
+pylint==3.0.3               # More linting
+mypy==1.7.1                 # Type checking
+
+# Testing Extensions
+pytest-xdist==3.5.0         # Parallel testing
+pytest-timeout==2.2.0       # Test timeouts
+pytest-benchmark==4.0.0     # Performance benchmarks
+locust==2.20.0              # Load testing
+
+# Development Tools
+ipython==8.18.1             # Enhanced Python shell
+ipdb==0.13.13               # Debugger
+watchdog==3.0.0             # File watching
+pre-commit==3.6.0           # Git hooks
+
+# Documentation
+sphinx==7.2.6               # Documentation generator
+sphinx-rtd-theme==2.0.0     # ReadTheDocs theme
+myst-parser==2.0.0          # Markdown support

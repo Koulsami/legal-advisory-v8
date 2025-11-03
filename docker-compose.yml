@@ -1,0 +1,202 @@
+# Legal Advisory System v8.0 - Infrastructure
+# Complete stack: Elasticsearch, PostgreSQL, Neo4j, Redis
+
+version: '3.8'
+
+services:
+  # ==================================
+  # Elasticsearch - BM25 Retrieval
+  # ==================================
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    container_name: legal-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ==================================
+  # PostgreSQL - Main Database
+  # ==================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: legal-postgres
+    environment:
+      POSTGRES_DB: legal_advisory_v8
+      POSTGRES_USER: legal_user
+      POSTGRES_PASSWORD: legal_password_change_in_prod
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ==================================
+  # Neo4j - Knowledge Graph
+  # ==================================
+  neo4j:
+    image: neo4j:5.14-community
+    container_name: legal-neo4j
+    environment:
+      NEO4J_AUTH: neo4j/legal_password_change_in_prod
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+      NEO4J_dbms_memory_heap_initial__size: 512m
+      NEO4J_dbms_memory_heap_max__size: 2g
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p legal_password_change_in_prod 'RETURN 1' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ==================================
+  # Redis - Caching & Sessions
+  # ==================================
+  redis:
+    image: redis:7-alpine
+    container_name: legal-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - legal-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ==================================
+  # Kibana - Elasticsearch UI (Optional)
+  # ==================================
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    container_name: legal-kibana
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - legal-network
+    profiles:
+      - monitoring
+
+  # ==================================
+  # Prometheus - Metrics (Optional)
+  # ==================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: legal-prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - legal-network
+    profiles:
+      - monitoring
+
+  # ==================================
+  # Grafana - Dashboards (Optional)
+  # ==================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: legal-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin_change_in_prod
+    volumes:
+      - grafana_data:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - legal-network
+    profiles:
+      - monitoring
+
+# ==================================
+# Networks
+# ==================================
+networks:
+  legal-network:
+    driver: bridge
+
+# ==================================
+# Volumes
+# ==================================
+volumes:
+  elasticsearch_data:
+    driver: local
+  postgres_data:
+    driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ==================================
+# Usage Instructions
+# ==================================
+#
+# Start core services:
+#   docker-compose up -d
+#
+# Start with monitoring:
+#   docker-compose --profile monitoring up -d
+#
+# Stop all services:
+#   docker-compose down
+#
+# Remove all data (CAREFUL!):
+#   docker-compose down -v
+#
+# View logs:
+#   docker-compose logs -f [service_name]
+#
+# Access UIs:
+#   - Elasticsearch: http://localhost:9200
+#   - Kibana: http://localhost:5601 (with --profile monitoring)
+#   - Neo4j Browser: http://localhost:7474
+#   - Grafana: http://localhost:3000 (with --profile monitoring)
+#   - Prometheus: http://localhost:9090 (with --profile monitoring)

@@ -1,0 +1,108 @@
+# Legal Advisory System v8.0 - Git Ignore File
+
+# Environment Variables - CRITICAL: Never commit API keys!
+.env
+.env.local
+.env.*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+docker-compose.override.yml
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+tmp/
+temp/
+
+# Backend specific
+backend/.env
+backend/*.log
+backend/temp/
+backend/uploads/
+
+# Frontend specific
+frontend/node_modules/
+frontend/.cache/
+frontend/dist/
+frontend/build/
+
+# Local development
+.local/
+local/
+
+# Secrets and credentials
+*secret*
+*credential*
+*password*
+*.pem
+*.key
+*.crt
+
+# Backup files
+*.bak
+*.backup
+*~

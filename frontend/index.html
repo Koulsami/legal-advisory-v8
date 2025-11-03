@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Advisory System v8.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ Legal Advisory System</h1>
+            <p class="subtitle">Zero-Hallucination Legal Assistance with Case Law Verification</p>
+        </header>
+
+        <main>
+            <!-- System Info Banner -->
+            <div class="info-banner" id="info-banner">
+                <div class="info-item">
+                    <span class="label">Confidence Threshold:</span>
+                    <span class="value" id="threshold">30%</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Available Modules:</span>
+                    <span class="value" id="modules">Loading...</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Status:</span>
+                    <span class="status-indicator" id="status">
+                        <span class="dot"></span>
+                        <span id="status-text">Checking...</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="chat-container" id="chat-container">
+                <div class="welcome-message">
+                    <h2>Welcome! How can I help you today?</h2>
+                    <p>Ask me anything about:</p>
+                    <ul>
+                        <li>Order 21: Costs Assessment</li>
+                        <li>Order 5: Amicable Resolution</li>
+                        <li>Order 14: Payment into Court</li>
+                    </ul>
+                    <p class="tip">💡 I'll ask clarifying questions if I need more information.</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <textarea
+                    id="user-input"
+                    placeholder="Ask a legal question... (e.g., 'When can I get indemnity costs?')"
+                    rows="3"
+                ></textarea>
+                <button id="send-btn" onclick="sendMessage()">
+                    <span id="send-btn-text">Send</span>
+                    <span id="send-btn-spinner" class="spinner hidden">⏳</span>
+                </button>
+            </div>
+
+            <!-- Example Questions -->
+            <div class="examples">
+                <p>Try these examples:</p>
+                <button class="example-btn" onclick="setQuestion('When can I get indemnity costs instead of standard costs?')">
+                    Indemnity Costs
+                </button>
+                <button class="example-btn" onclick="setQuestion('What are the costs for opposing a stay application in a case worth $500,000?')">
+                    Stay Application Costs
+                </button>
+                <button class="example-btn" onclick="setQuestion('What does costs follow the event mean?')">
+                    Costs Follow Event
+                </button>
+            </div>
+        </main>
+
+        <footer>
+            <p>Legal Advisory System v8.0 | Zero-Hallucination Architecture | Powered by Claude</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
