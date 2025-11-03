@@ -36,16 +36,11 @@ app = FastAPI(
 )
 
 # CORS configuration for frontend
+# Allow all origins for now (can be restricted later with specific Netlify domain)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://localhost:5173",
-        "http://localhost:8000",
-        "https://*.netlify.app",
-        "https://*.railway.app"
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],  # Allow all origins - update with specific domain in production
+    allow_credentials=False,  # Set to False when using allow_origins=["*"]
     allow_methods=["*"],
     allow_headers=["*"],
 )
