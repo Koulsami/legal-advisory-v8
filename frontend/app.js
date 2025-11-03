@@ -3,7 +3,7 @@
 // Configuration
 const API_BASE_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:8000'
-    : 'https://your-backend-url.railway.app'; // Update this after Railway deployment
+    : 'https://legal-advisory-v8-production.up.railway.app'; // Update this after Railway deployment
 
 // State
 let conversationHistory = [];
